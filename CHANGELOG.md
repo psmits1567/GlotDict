@@ -1,3 +1,7 @@
+# 2.1.6
+
+*Bugfix: Errors in developer console when opening Meta and tick a box to tell the author what is wrong #421
+
 # 2.1.5
 
 * Enhancement: Added option to hide the language selector

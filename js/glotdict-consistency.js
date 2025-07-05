@@ -346,13 +346,18 @@ function gd_notranslate_insertText( el, text ) {
 
 function gd_notranslate_update( ev ) {
 	let textarea_content = ev.currentTarget.value;
-	ev.currentTarget.closest( '.editor-panel__left' ).querySelectorAll( '.gd_notranslate a' ).forEach( ( notranslate_item ) => {
-		const notranslate_text = notranslate_item.textContent;
-		if ( textarea_content.indexOf( notranslate_text ) > -1 ) {
-			notranslate_item.classList.add( 'used' );
-			textarea_content = textarea_content.replace( notranslate_text, '' );
-			return;
-		}
-		notranslate_item.classList.remove( 'used' );
-	} );
+	// 05-07-2025 PSS fixed an error caused by clicking in the Meta area issue #421
+	let target = ev.currentTarget.closest('.editor-panel__left')
+	if (target != null) {
+		target.querySelectorAll('.gd_notranslate a').forEach((notranslate_item) => {
+			//ev.currentTarget.closest( '.editor-panel__left' ).querySelectorAll( '.gd_notranslate a' ).forEach( ( notranslate_item ) => {
+			const notranslate_text = notranslate_item.textContent;
+			if (textarea_content.indexOf(notranslate_text) > -1) {
+				notranslate_item.classList.add('used');
+				textarea_content = textarea_content.replace(notranslate_text, '');
+				return;
+			}
+			notranslate_item.classList.remove('used');
+		});
+	}
 }
