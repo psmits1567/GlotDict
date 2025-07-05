@@ -17,11 +17,14 @@ if ( ( 'undefined' !== typeof $gp_editor_options ) && '1' === $gp_editor_options
 	gd_user.is_on_translations = true;
 }
 gd_user.is_connected = document.querySelector( 'body.logged-in' ) !== null;
-
-document.querySelector( '#menu-headline-nav' ).insertAdjacentHTML( 'beforeend', '<li class="gd_setting" style="cursor:pointer;"><a> GlotDict</a></li>' );
-document.querySelector( '.gd_setting' ).prepend( document.querySelector( '.gd_icon' ) );
-document.querySelector( '.gd_icon' ).style.display = '';
-
+let menu_headline_nav = document.querySelector('#menu-headline-nav')
+// 05-04-2025 PSS fixed issue #423
+if (menu_headline_nav != null) {
+	menu_headline_nav.insertAdjacentHTML('beforeend', '<li class="gd_setting" style="cursor:pointer;"><a> GlotDict</a></li>');
+	//document.querySelector( '#menu-headline-nav' ).insertAdjacentHTML( 'beforeend', '<li class="gd_setting" style="cursor:pointer;"><a> GlotDict</a></li>' );
+	document.querySelector('.gd_setting').prepend(document.querySelector('.gd_icon'));
+	document.querySelector('.gd_icon').style.display = '';
+}
 const gd_settings_menu = document.querySelector( '.gd_setting' );
 gd_settings_menu && gd_settings_menu.addEventListener( 'click', () => {
 	if ( document.body.classList.contains( 'gd-settings-on-screen' ) && '0' !== gd_extension.previousVersion ) {
