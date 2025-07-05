@@ -3,6 +3,7 @@
 * Bugfix: Errors in developer console when opening Meta and tick a box to tell the author what is wrong #421
 * Bugfix: Error when arriving at "translate.wordpress.org" issue #423
 * Bugfix: Marking copied from original strings enhancement #296
+* Bugfix: Added ./vs to .ignore
 
 
 # 2.1.5
