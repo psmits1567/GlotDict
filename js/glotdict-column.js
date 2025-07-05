@@ -1,12 +1,10 @@
 function gd_add_column() {
-	if ( jQuery( '#translations thead tr th' ).length < 6 ) {
-		jQuery( '#translations thead tr' ).append( '<th></th>' );
-	}
+	
 	let counter = 0
 	let timeout = 0
 	let WPTF_active = get_WPTF()
 	if (WPTF_active === true) {
-		timeout = 500
+		timeout = 0
 	}
 	// PSS when both addons are active the columns are not shown properly
 	new Promise(resolve => {
@@ -16,6 +14,13 @@ function gd_add_column() {
 		}, timeout);
 	})
 		.then(() => {
+			// 05-07-2025 PSS issue 428 columns are not shown properly
+			let header = document.querySelector('#translations thead tr')
+			const thCount = header.querySelectorAll('th').length;
+			if (thCount < 6) {
+			//if (jQuery('#translations thead tr th').length < 6) {
+				jQuery('#translations thead tr').append('<th></th>');
+			}
 			jQuery('#translations tr.preview').each(function () {
 				if (jQuery(this).find('td').length < 5) {
 					gd_add_column_buttons(this);
