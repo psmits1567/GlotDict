@@ -36,7 +36,7 @@ table.translations tr.preview.has-glotdict.has-warnings th+.priority+.original::
 
 table.translations tr.preview.has-original-copy,
 #legend .has-original-copy {
-    background: #e5f5fa;
+    background: #e5f5fa !important;
 }
 
 /*

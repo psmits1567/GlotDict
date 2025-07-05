@@ -30,24 +30,29 @@ jQuery( '.bulk-actions' ).on( 'click', '.button', ( e ) => {
 		$gp.editor.hide(); // Avoid validation on open editors that are empty.
 		gd_checked_rows.forEach( row => {
 			const checkbox = jQuery( `#preview-${row} th.checkbox input` );
-			if ( gd_get_setting( 'autosubmit_bulk_copy_from_original' ) ) {
-				setTimeout( () => {
-					$gp.editor.show( checkbox );
-					jQuery( `#editor-${row} .translation-actions__copy` ).trigger( 'click' );
-					jQuery( `#editor-${row} textarea.foreign-text` ).trigger( 'change' );
-					jQuery( `#preview-${row}` ).addClass( 'has-original-copy' );
-					if ( gd_get_setting( 'force_autosubmit_bulk_copy_from_original' ) ) {
-						jQuery( `#editor-${row} button.translation-actions__save` ).addClass( 'forcesubmit' );
+			if (gd_get_setting('autosubmit_bulk_copy_from_original')) {
+				setTimeout(() => {
+					$gp.editor.show(checkbox);
+					jQuery(`#editor-${row} .translation-actions__copy`).trigger('click');
+					jQuery(`#editor-${row} textarea.foreign-text`).trigger('change');
+					jQuery(`#preview-${row}`).addClass('has-original-copy');
+					if (gd_get_setting('force_autosubmit_bulk_copy_from_original')) {
+						jQuery(`#editor-${row} button.translation-actions__save`).addClass('forcesubmit');
 					}
-					jQuery( `#editor-${row} button.translation-actions__save` ).trigger( 'click' );
+					jQuery(`#editor-${row} button.translation-actions__save`).trigger('click');
 					copied_count++;
-					gd_copied_count_notice( copied_count );
-				}, timeout );
-				timeout += 2000;
+					gd_copied_count_notice(copied_count);
+				}, timeout);
+				timeout += 1500;
 			} else {
-				$gp.editor.show( checkbox );
-				jQuery( `#editor-${row} .translation-actions__copy` ).trigger( 'click' );
-				jQuery( `#editor-${row} textarea.foreign-text` ).trigger( 'change' );
+				$gp.editor.show(checkbox);
+				jQuery(`#editor-${row} .translation-actions__copy`).trigger('click');
+				jQuery(`#editor-${row} textarea.foreign-text`).trigger('change');
+				console.debug("text copied:", jQuery(`#editor-${row} textarea.foreign-text`)[0].value)
+				let text_copied = jQuery(`#editor-${row} textarea.foreign-text`)[0].value
+				let preview = jQuery(`#preview-${row}`)[0]
+				let preview_text = preview.getElementsByClassName('translation foreign-text')[0]
+				preview_text.innerText = text_copied
 				jQuery( `#preview-${row}` ).addClass( 'has-original-copy' );
 				copied_count++;
 				gd_copied_count_notice( copied_count );
