@@ -830,7 +830,7 @@ function get_WPTF() {
 	}
 }
 
-function check_for_URL(word, translatedText) {
+function gd_check_for_URL(word, translatedText) {
 	// This function checks if a word is within an URL or part URL
 	const lowerWord = word.toLowerCase();
 
@@ -849,5 +849,17 @@ function check_for_URL(word, translatedText) {
 	return matches.some(url => url.toLowerCase().includes(lowerWord));
 }
 
+function gd_check_for_split(glossary_word, translatedText) {
+	if (!glossary_word || !translatedText) return true;
 
+	const variants = glossary_word.split('/');
+
+	// Return true only if none of the variants are found
+	for (const variant of variants) {
+		if (translatedText.toLowerCase().includes(variant.toLowerCase())) {
+			return false; // Found → not missing
+		}
+	}
+	return true; // None found → missing
+}
 
