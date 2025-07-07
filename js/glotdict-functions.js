@@ -831,23 +831,31 @@ function get_WPTF() {
 }
 
 function gd_check_for_URL(word, translatedText) {
-	// This function checks if a word is within an URL or part URL
+	if (!word || !translatedText) return false;
+
 	const lowerWord = word.toLowerCase();
 
-	// Match full URLs (http, https, ftp)
+	// Step 1: Remove HTML tags to expose inner text
+	const textWithoutTags = translatedText.replace(/<[^>]*>/g, '');
+
+	// Step 2: Match full URLs
 	const fullURLRegex = /\b(?:https?|ftp):\/\/[^\s"'<>]+/gi;
 
-	// Match partial paths like wp-content/plugins/
-	const partialPathRegex = /\bwp-content\/plugins\/[^\s"'<>]*/gi;
+	// Step 3: Match common plugin paths
+	const partialPathRegex = /\b[a-zA-Z0-9\-_.\/]*wp-content\/plugins\/[^\s"'<>]*/gi;
 
-	// Combine all matches
+	// Step 4: Extract matches from cleaned text
 	const matches = [
-		...(translatedText.match(fullURLRegex) || []),
-		...(translatedText.match(partialPathRegex) || [])
+		...(textWithoutTags.match(fullURLRegex) || []),
+		...(textWithoutTags.match(partialPathRegex) || []),
+		textWithoutTags // Also search the whole cleaned text
 	];
 
-	return matches.some(url => url.toLowerCase().includes(lowerWord));
+	// Step 5: Return true if the word appears in any relevant part
+	return matches.some(entry => entry.toLowerCase().includes(lowerWord));
 }
+
+
 
 function gd_check_for_split(glossary_word, translatedText) {
 	console.debug("glossary translation:",glossary_word)
