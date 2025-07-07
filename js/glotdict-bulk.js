@@ -27,6 +27,11 @@ jQuery( '.bulk-actions' ).on( 'click', '.button', ( e ) => {
 	if ( 'copy-from-original' === jQuery( '.bulk-action option:selected' ).val() ) {
 		let copied_count = 0;
 		let timeout = 0;
+		let gd_timeout = localStorage.getItem('gd-timeout');
+		console.debug("gd-timout:", gd_timeout)
+		if (gd_timeout != null) {
+			timeout_increase = parseInt(gd_timeout, 10);
+		}
 		$gp.editor.hide(); // Avoid validation on open editors that are empty.
 		gd_checked_rows.forEach( row => {
 			const checkbox = jQuery( `#preview-${row} th.checkbox input` );
@@ -43,7 +48,8 @@ jQuery( '.bulk-actions' ).on( 'click', '.button', ( e ) => {
 					copied_count++;
 					gd_copied_count_notice( copied_count );
 				}, timeout );
-				timeout += 2000;
+				timeout += timeout_increase;
+				console.debug("new tiemout:",timeout)
 			} else {
 				$gp.editor.show( checkbox );
 				jQuery( `#editor-${row} .translation-actions__copy` ).trigger( 'click' );

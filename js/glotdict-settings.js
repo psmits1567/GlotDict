@@ -185,14 +185,96 @@ function gd_generate_settings_panel() {
 		tr.appendChild( document.createElement( 'TD' ) ).appendChild( document.createTextNode( `${key}` ) );
 		tr.appendChild( document.createElement( 'TD' ) ).appendChild( document.createTextNode( `${value}` ) );
 		fragment.appendChild( tr );
-	} );
-	const table = document.createElement( 'TABLE' );
-	table.appendChild( fragment ) && panel1.appendChild( table );
-	const caution_note = document.createElement( 'SPAN' );
+	});
+
+	const timeoutDiv = document.createElement('div');
+	timeoutDiv.id = 'timeout_value';
+	timeoutDiv.style.display = 'block';
+	timeoutDiv.style.width = '100%';
+	timeoutDiv.style.margin = '0';       // remove margin
+	timeoutDiv.style.padding = '0';      // remove padding
+	timeoutDiv.style.textAlign = 'left'; // ensure left alignment
+
+	const timeoutLabel = document.createElement('label');
+	timeoutLabel.htmlFor = 'gd-timeout-input';
+	timeoutLabel.textContent = 'Increase timeout steps auto-save (ms):';
+	//timeoutLabel.style.display = 'inline-block';
+	timeoutDiv.style.display = 'block';
+	timeoutDiv.style.width = '100%';
+	timeoutDiv.style.marginTop = '1em';    // NEW: space above timeout line
+	timeoutDiv.style.marginBottom = '1em'; // existing space below
+
+	timeoutLabel.style.margin = '0 0.5em 0 0'; // right margin only
+	timeoutLabel.style.padding = '0';
+	timeoutLabel.style.textAlign = 'left';
+
+	const minTimeout = 0;
+	const maxTimeout = 10000;
+	const defaultTimeout = 1000;
+
+	// Create the input
+	const timeoutInput = document.createElement('input');
+	timeoutInput.type = 'number';
+	timeoutInput.id = 'gd-timeout-input';
+	timeoutInput.min = minTimeout;
+	timeoutInput.max = maxTimeout;
+	timeoutInput.style.width = '100px';
+	timeoutInput.style.padding = '3px';
+
+	// Restore from localStorage
+	let stored = localStorage.getItem('gd-timeout');
+	let parsed = parseInt(stored, 10);
+	if (!isNaN(parsed) && parsed >= minTimeout && parsed <= maxTimeout) {
+		timeoutInput.value = parsed;
+	} else {
+		timeoutInput.value = defaultTimeout;
+		localStorage.setItem('gd-timeout', defaultTimeout);
+	}
+
+	// Save on valid input (ignore blanks or invalid)
+	timeoutInput.addEventListener('input', () => {
+		const val = timeoutInput.value.trim();
+
+		// Allow empty while typing
+		if (val === '') return;
+
+		const num = parseInt(val, 10);
+		if (!isNaN(num) && num >= minTimeout && num <= maxTimeout) {
+			localStorage.setItem('gd-timeout', num);
+		}
+	});
+
+	// Clamp on blur (after editing is done)
+	timeoutInput.addEventListener('blur', () => {
+		let num = parseInt(timeoutInput.value, 10);
+
+		if (isNaN(num)) num = defaultTimeout;
+		if (num < minTimeout) num = minTimeout;
+		if (num > maxTimeout) num = maxTimeout;
+
+		timeoutInput.value = num;
+		localStorage.setItem('gd-timeout', num);
+	});
+
+
+
+	// Append label then input inside the div
+	timeoutDiv.appendChild(timeoutLabel);
+	timeoutDiv.appendChild(timeoutInput);
+
+	panel1.appendChild(timeoutDiv);
+
+	const caution_note = document.createElement('span');
+	caution_note.textContent = '⚠️ Please use features marked like this with caution!';
+	caution_note.style.display = 'block';
 	caution_note.style.fontWeight = 'bold';
-	caution_note.style.margin = '1em 0 .2em';
-	caution_note.append( asterisk, 'Please use features marked like this with caution!' );
-	panel1.appendChild( caution_note );
+	caution_note.style.marginTop = '0';
+	caution_note.style.marginBottom = '1em';
+	caution_note.style.color = '#b33';
+	caution_note.style.textAlign = 'left';
+
+	panel1.appendChild(caution_note);
+
 
 	const changelog = document.createElement( 'DIV' );
 	changelog.classList.add( 'gd_changelog' );
