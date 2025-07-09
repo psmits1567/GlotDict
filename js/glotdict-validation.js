@@ -67,21 +67,31 @@ function gd_search_glossary_on_translation( e, selector ) {
 				let reset = '';
 				let count = '';
 				const term = jQuery( glossary_element ).html();
-				jQuery( glossary_word_translations ).each( ( index ) => {
+				jQuery(glossary_word_translations).each((index) => {
+					gloss_translated = glossary_word_translations[index].translation
+					console.debug("gloss:",gloss_translated)
 					if ( 'N/A' === glossary_word_translations[index].translation ) {
 						return true;
 					}
-					const translation_word_occurrence = gd_occurrences( translation.value, glossary_word_translations[index].translation );
-					if ( translation_word_occurrence < glossary_word_occurrence ) {
-						words_with_warning.push( glossary_word );
-						reset = `${reset}“<b>${glossary_word_translations[index].translation}</b>“, `;
-						const diff = glossary_word_occurrence - translation_word_occurrence;
-						count = `${diff} time${diff > 1 ? 's' : ''}`;
-					} else {
+					const translation_word_occurrence = gd_occurrences(translation.value, glossary_word_translations[index].translation);
+					gloss_splitted_not_found = gd_check_for_split(gloss_translated, translatedText)
+					console.debug("gloss_splitted:", gloss_splitted_not_found)
+					if (gloss_splitted_not_found == true) {
+						if (translation_word_occurrence < glossary_word_occurrence) {
+							words_with_warning.push(glossary_word);
+							reset = `${reset}“<b>${glossary_word_translations[index].translation}</b>“, `;
+							const diff = glossary_word_occurrence - translation_word_occurrence;
+							count = `${diff} time${diff > 1 ? 's' : ''}`;
+						} else {
+							reset = '';
+							return false;
+						}
+					}
+					else {
 						reset = '';
 						return false;
 					}
-				} );
+				});
 				if ( reset !== '' ) {
 					howmany++;
 					reset = reset.slice( 0, -2 );
@@ -89,8 +99,28 @@ function gd_search_glossary_on_translation( e, selector ) {
 					if ( glossary_word_translations.length > 1 ) {
 						message = 'The translation does not contain any of the suggested translations';
 					}
-					const form = translations.length > 1 ? ( original_index === SINGULAR ? ' for singular' : ' for plural' ) : '';
-					jQuery( '.textareas', $editor ).prepend( gd_get_warning( `${message} (${reset}) for the term “<i>${term}</i>“ ${count}${form}.`, discard ) );
+					const form = translations.length > 1 ? (original_index === SINGULAR ? ' for singular' : ' for plural') : '';
+					// PSS 06-07-2025 issue #427 We need to check if the word has splitted contents, then we need to check the separate words
+					
+					if (gloss_splitted_not_found == true) {
+						// We need to check if the word is within a URL
+						let is_within_URL = gd_check_for_URL(glossary_word, translatedText)
+						console.debug("is within URL:", is_within_URL)
+						// If it is not part of an URL give the warning for it
+						if (is_within_URL == false) {
+							jQuery('.textareas', $editor).prepend(gd_get_warning(`${message} (${reset}) for the term “<i>${term}</i>“ ${count}${form}.`, discard));
+						}
+						else {
+							// We need not to mark the current as wrong
+							howmany--
+							return howmany;
+						}
+					}
+					else {
+						// We need not to mark the current as wrong
+						howmany--
+						return howmany;
+					}
 				}
 			} );
 			original_index = PLURAL;
