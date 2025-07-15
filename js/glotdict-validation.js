@@ -259,3 +259,17 @@ function gd_get_discard_link( selector ) {
 function gd_get_warning( text, discard ) {
 	return `<div class="warning secondary gd-warning"><strong>Warning:</strong> ${text}</strong>${discard}</div>`;
 }
+function gd_check_for_split(glossary_word, translatedText) {
+	console.debug("glossary translation:",glossary_word)
+	if (!glossary_word || !translatedText) return true;
+
+	const variants = glossary_word.split('/');
+
+	// Return true only if none of the variants are found
+	for (const variant of variants) {
+		if (translatedText.toLowerCase().includes(variant.toLowerCase())) {
+			return false; // Found → not missing
+		}
+	}
+	return true; // None found → missing
+}

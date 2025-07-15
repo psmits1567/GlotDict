@@ -2,10 +2,10 @@ function gd_add_column() {
 	
 	let counter = 0
 	let timeout = 0
-	let WPTF_active = get_WPTF()
-	if (WPTF_active === true) {
-		timeout = 0
-	}
+	//let WPTF_active = get_WPTF()
+	//if (WPTF_active === true) {
+	//	timeout = 0
+	//}
 	// PSS when both addons are active the columns are not shown properly
 	new Promise(resolve => {
 		setTimeout(() => {
